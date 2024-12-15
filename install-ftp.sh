@@ -10,7 +10,7 @@ FTP_GROUP="ftpusers"
 # Updates uitvoeren en vsftpd installeren
 apt-get update -y
 apt-get install -y vsftpd
-# apt-get install -y ufw
+apt-get install -y ufw
 
 # Gedeelde directory aanmaken
 mkdir -p $FTP_DATA_DIR
@@ -38,7 +38,7 @@ write_enable=YES
 local_umask=022
 chroot_local_user=YES
 allow_writeable_chroot=YES
-#user_sub_token=\$USER
+user_sub_token=\$USER
 local_root=$FTP_DATA_DIR
 pasv_enable=YES
 pasv_min_port=1024
@@ -46,15 +46,20 @@ pasv_max_port=1048
 EOL
 
 # Beveiligingsmaatregelen
-#echo "ftpuser1" | tee -a /etc/vsftpd.userlist
-#echo "ftpuser2" | tee -a /etc/vsftpd.userlist
-#echo $ADMIN_USER | tee -a /etc/vsftpd.userlist
-#echo "userlist_enable=YES" | tee -a /etc/vsftpd.conf
-#echo "userlist_file=/etc/vsftpd.userlist" | tee -a /etc/vsftpd.conf
-#echo "userlist_deny=NO" | tee -a /etc/vsftpd.conf
+echo "ftpuser1" | tee -a /etc/vsftpd.userlist
+echo "ftpuser2" | tee -a /etc/vsftpd.userlist
+echo $ADMIN_USER | tee -a /etc/vsftpd.userlist
+echo "userlist_enable=YES" | tee -a /etc/vsftpd.conf
+echo "userlist_file=/etc/vsftpd.userlist" | tee -a /etc/vsftpd.conf
+echo "userlist_deny=NO" | tee -a /etc/vsftpd.conf
 
 # Service herstarten
 systemctl restart vsftpd
 systemctl enable vsftpd
+
+# firewall allow ssh and ftp
+ufw allow ssh
+ufw allow ftp
+ufw enable
 
 echo "FTP-server configuratie voltooid. Alleen toegang tot $FTP_DATA_DIR toegestaan."
