@@ -9,7 +9,7 @@ FTP_GROUP="ftpusers"
 
 # Updates uitvoeren en vsftpd installeren
 apt-get update -y
-apt-get install -y vsftpd ufw passwd
+apt-get install -y vsftpd ufw whois
 
 # Gedeelde directory aanmaken
 mkdir -p $FTP_DATA_DIR
@@ -20,9 +20,9 @@ groupadd $FTP_GROUP
 chown :$FTP_GROUP $FTP_DATA_DIR
 
 # FTP-gebruikers aanmaken en aan de groep toevoegen
-useradd -m -d $FTP_DATA_DIR -s /sbin/nologin -G $FTP_GROUP ftpuser1
+useradd -m -d $FTP_DATA_DIR -G $FTP_GROUP ftpuser1
 echo "ftpuser1:$FTPUSER1_PASSWORD" | chpasswd
-useradd -m -d $FTP_DATA_DIR -s /sbin/nologin -G $FTP_GROUP ftpuser2
+useradd -m -d $FTP_DATA_DIR -G $FTP_GROUP ftpuser2
 echo "ftpuser2:$FTPUSER2_PASSWORD" | chpasswd
 
 # Admin-gebruiker toevoegen aan de FTP-groep
