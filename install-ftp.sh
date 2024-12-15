@@ -1,34 +1,34 @@
 #!/bin/bash
 
-# Variabelen uit parameters
+# Definieer variabelen voor gebruikersnamen en wachtwoorden
 ADMIN_USER=$1
 FTPUSER1_PASSWORD=$2
 FTPUSER2_PASSWORD=$3
 FTP_DATA_DIR=$4
 FTP_GROUP="ftpusers"
 
-# Updates uitvoeren en vsftpd installeren
+# Installeer benodigde pakketten vsftpd, ufw en whois
 apt-get update -y
 apt-get install -y vsftpd ufw whois
 
-# Gedeelde directory aanmaken
+# Maak de FTP data directory aan en stel permissies in
 mkdir -p $FTP_DATA_DIR
 chmod 770 $FTP_DATA_DIR
 
-# Groep aanmaken en directory aan groep koppelen
+# Maak een FTP gebruikersgroep aan en stel groepsrechten in op de data directory
 groupadd $FTP_GROUP
 chown :$FTP_GROUP $FTP_DATA_DIR
 
-# FTP-gebruikers aanmaken en aan de groep toevoegen
+# Voeg ftpuser1 en ftpuser2 toe aan de FTP groep en stel hun wachtwoorden in
 useradd -m -d $FTP_DATA_DIR -G $FTP_GROUP ftpuser1
 echo "ftpuser1:$FTPUSER1_PASSWORD" | chpasswd
 useradd -m -d $FTP_DATA_DIR -G $FTP_GROUP ftpuser2
 echo "ftpuser2:$FTPUSER2_PASSWORD" | chpasswd
 
-# Admin-gebruiker toevoegen aan de FTP-groep
+# Voeg de beheerdersgebruiker toe aan de FTP groep
 usermod -a -G $FTP_GROUP $ADMIN_USER
 
-# Configuratie van vsftpd aanpassen
+# Maak het vsftpd configuratiebestand aan met de benodigde instellingen
 cat <<EOL > /etc/vsftpd.conf
 listen=YES
 anonymous_enable=NO
@@ -44,7 +44,7 @@ pasv_min_port=1024
 pasv_max_port=1048
 EOL
 
-# Beveiligingsmaatregelen
+# Voeg gebruikers toe aan de vsftpd gebruikerslijst en pas de configuratie aan
 echo "ftpuser1" | tee -a /etc/vsftpd.userlist
 echo "ftpuser2" | tee -a /etc/vsftpd.userlist
 echo $ADMIN_USER | tee -a /etc/vsftpd.userlist
@@ -52,11 +52,11 @@ echo "userlist_enable=YES" | tee -a /etc/vsftpd.conf
 echo "userlist_file=/etc/vsftpd.userlist" | tee -a /etc/vsftpd.conf
 echo "userlist_deny=NO" | tee -a /etc/vsftpd.conf
 
-# Service herstarten
+# Herstart de vsftpd service en schakel deze in bij opstarten
 systemctl restart vsftpd
 systemctl enable vsftpd
 
-# firewall allow ssh and ftp
+# Configureer de firewall om SSH en FTP verkeer toe te staan
 ufw allow ssh
 ufw allow ftp
 ufw enable
