@@ -9,7 +9,14 @@ FTP_GROUP="ftpusers"
 
 # Updates uitvoeren en vsftpd installeren
 apt-get update -y
+apt-get upgrade -y
 apt-get install -y vsftpd
+apt-get install -y ufw
+
+# firewall allow ssh and ftp
+ufw allow ssh
+ufw allow ftp
+ufw enable
 
 # Configuratie van vsftpd
 cat <<EOL > /etc/vsftpd.conf
