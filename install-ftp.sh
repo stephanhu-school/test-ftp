@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Variabelen uit parameters
-FTPUSER1_PASSWORD=$1
-FTPUSER2_PASSWORD=$2
-FTP_DATA_DIR=$3
-ADMIN_USER=$4
+ADMIN_USER=$1
+FTPUSER1_PASSWORD=$2
+FTPUSER2_PASSWORD=$3
+FTP_DATA_DIR=$4
 FTP_GROUP="ftpusers"
 
 # Updates uitvoeren en vsftpd installeren
