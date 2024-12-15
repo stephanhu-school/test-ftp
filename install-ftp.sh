@@ -10,7 +10,7 @@ FTP_GROUP="ftpusers"
 # Updates uitvoeren en vsftpd installeren
 apt-get update -y
 apt-get install -y vsftpd
-#apt-get install -y ufw
+# apt-get install -y ufw
 
 # Gedeelde directory aanmaken
 mkdir -p $FTP_DATA_DIR
